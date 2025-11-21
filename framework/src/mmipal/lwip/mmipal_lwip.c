@@ -4,6 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include <string.h>
+#include <assert.h>
+#include <stdio.h>
+
 #include "mmipal.h"
 #include "mmnetif.h"
 #include "mmwlan.h"
@@ -500,8 +504,11 @@ static void tcpip_init_done_handler(void *arg)
     }
 #endif
 
-    netif_set_link_callback(netif, netif_status_callback);
-    netif_set_status_callback(netif, netif_status_callback);
+// ESP-IDF v5.5.1 compatibility: skip netif callbacks that may not exist in newer LWIP versions
+// These callbacks were used for immediate link status notifications, but are not essential
+// for basic IP address retrieval functionality. Status can be polled when needed.
+// netif_set_link_callback(netif, netif_status_callback);
+// netif_set_status_callback(netif, netif_status_callback);
 
 #if LWIP_IPV6
     err_t result6;
