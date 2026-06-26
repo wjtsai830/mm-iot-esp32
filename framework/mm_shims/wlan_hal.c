@@ -33,11 +33,14 @@ static void wlan_hal_gpio_init(void)
     gpio_config_t io_conf = {};
     io_conf.intr_type = GPIO_INTR_DISABLE;
     io_conf.mode = GPIO_MODE_OUTPUT;
-    io_conf.pin_bit_mask = ((1ull << CONFIG_MM_WAKE) | (1ull << CONFIG_MM_SPI_CS));
+    io_conf.pin_bit_mask = ((1ull << CONFIG_MM_RESET_N) |
+                            (1ull << CONFIG_MM_WAKE) |
+                            (1ull << CONFIG_MM_SPI_CS));
     io_conf.pull_down_en = 0;
     io_conf.pull_up_en = 0;
     gpio_config(&io_conf);
 
+    gpio_set_level(CONFIG_MM_RESET_N, 0);
     gpio_set_level(CONFIG_MM_WAKE, 0);
     gpio_set_level(CONFIG_MM_SPI_CS, 0);
 
@@ -51,6 +54,7 @@ static void wlan_hal_gpio_init(void)
     io_conf.mode = GPIO_MODE_INPUT;
     io_conf.pin_bit_mask = (1ull << CONFIG_MM_SPI_IRQ);
     io_conf.pull_down_en = 0;
+    io_conf.pull_up_en = 1;
     gpio_config(&io_conf);
 }
 
